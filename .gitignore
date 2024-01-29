@@ -1,2 +1,9 @@
 data/
 __pycache__/
+Images/
+*.pth
+*.csv
+*.jpg
+*.png
+*.jpeg
+*.webp

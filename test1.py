@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Load the trained model
 model = SimpleNN()
 model.load_state_dict(torch.load('mnist_model.pth'))
-model.eval()
+# model.eval()
 
 # Define transformations for the uploaded image
 transform = transforms.Compose([transforms.Grayscale(), transforms.ToTensor()])

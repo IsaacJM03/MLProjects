@@ -28,10 +28,10 @@ model = SimpleNN()
 
 # define loss function and optimiser
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(),lr=0.01) #learning rate of 0.01
+optimizer = optim.SGD(model.parameters(),lr=0.01) #learning rate of 0.01
 
 # train the model
-num_epochs = 5
+num_epochs = 10
 train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=64,shuffle=True)
 
 
@@ -50,7 +50,7 @@ for epoch in range(num_epochs):
 
     # Print the input data (images) and labels
     # print("Input Data:", inputs)
-    print("Labels:", labels)
+    # print("Labels:", labels)
     outputs = model(inputs)
     loss = criterion(outputs,labels)
     loss.backward()
@@ -74,52 +74,52 @@ for epoch in range(num_epochs):
 
 torch.save(model.state_dict(), 'mnist_model.pth')
 # test the model
-# test_loader = torch.utils.data.DataLoader(dataset=test_dataset,batch_size=64,shuffle=False)
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset,batch_size=64,shuffle=False)
 
-# correct = 0
-# total = 0
+correct = 0
+total = 0
 
-# with torch.no_grad():
-#   for inputs,labels in test_loader:
-#     outputs = model(inputs)
-#     _,predicted = torch.max(outputs.data,1)
-#     total += labels.size(0)
-#     correct += (predicted == labels).sum().item()
+with torch.no_grad():
+  for inputs,labels in test_loader:
+    outputs = model(inputs)
+    _,predicted = torch.max(outputs.data,1)
+    total += labels.size(0)
+    correct += (predicted == labels).sum().item()
 
-# accuracy = correct / total
-# print('Accuracy of the model on the test images: {:.2%}'.format(accuracy))
-
-
-# # Plotting
-# plt.figure(figsize=(10, 5))
-
-# # Plot training and testing loss
-# plt.subplot(1, 2, 1)
-# plt.plot(train_losses, label='Training Loss', color='blue')
-# plt.title('Training Loss')
-# plt.xlabel('Epoch')
-# plt.ylabel('Loss')
-# plt.legend()
-
-# # Plot training accuracy
-# plt.subplot(1, 2, 2)
-# plt.plot(train_accuracies, label='Training Accuracy', color='green')
-# plt.title('Training Accuracy')
-# plt.xlabel('Epoch')
-# plt.ylabel('Accuracy')
-# plt.legend()
-
-# plt.tight_layout()
-# plt.show()
-
-# '''
-# Training loss is a measure of how well the model is performing on the training data during the training process. It quantifies the difference between the predicted output and the actual target values for the training set.
-# The goal during training is to minimize the training loss. Lower values of the training loss indicate that the model is getting closer to making accurate predictions on the training data.
+accuracy = correct / total
+print('Accuracy of the model on the test images: {:.2%}'.format(accuracy))
 
 
-# Training accuracy is a measure of how many training examples are correctly classified by the model during training.
-# It is calculated by comparing the predicted class labels to the actual class labels for the training set.
+# Plotting
+plt.figure(figsize=(10, 5))
+
+# Plot training and testing loss
+plt.subplot(1, 2, 1)
+plt.plot(train_losses, label='Training Loss', color='blue')
+plt.title('Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+
+# Plot training accuracy
+plt.subplot(1, 2, 2)
+plt.plot(train_accuracies, label='Training Accuracy', color='green')
+plt.title('Training Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+'''
+Training loss is a measure of how well the model is performing on the training data during the training process. It quantifies the difference between the predicted output and the actual target values for the training set.
+The goal during training is to minimize the training loss. Lower values of the training loss indicate that the model is getting closer to making accurate predictions on the training data.
 
 
-# epoch is like each iteration through the data set.
-# '''
+Training accuracy is a measure of how many training examples are correctly classified by the model during training.
+It is calculated by comparing the predicted class labels to the actual class labels for the training set.
+
+
+epoch is like each iteration through the data set.
+'''
