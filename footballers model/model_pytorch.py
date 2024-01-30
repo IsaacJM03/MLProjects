@@ -16,13 +16,14 @@ class CNNModel(nn.Module):
     def __init__(self):
         IMG_SIZE = 90
         super(CNNModel, self).__init__()
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(1,64, kernel_size=3, stride=1, padding=1)
         self.relu1 = nn.ReLU()
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
         self.conv2 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
         self.relu2 = nn.ReLU()
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
 
         self.flatten = nn.Flatten()
         self.fc1 = nn.Linear(64 * (IMG_SIZE // 4) * (IMG_SIZE // 4), 64)
@@ -37,6 +38,7 @@ class CNNModel(nn.Module):
         x = self.flatten(x)
         x = self.relu3(self.fc1(x))
         x = self.dropout(x)
+        # Basically, the sigmoid function determines which value to pass as output and what not to pass as output. Removes non-linearity and produces a probability
         x = self.sigmoid(self.fc2(x))
         return x
 
@@ -55,17 +57,25 @@ class CustomDataset(Dataset):
         img = self.transform(img) if self.transform else img
         return img, label
 
-
 # Plot accuracy and loss
-def plot_accuracy_loss(train_losses, val_losses):
+def plot_accuracy_loss(train_losses, val_losses, train_accuracies, val_accuracies):
     epochs = range(1, len(train_losses) + 1)
-    
+
     # Plot training and validation losses
     plt.subplot(221)
     plt.plot(epochs, train_losses, 'bo--', label="train_loss")
     plt.plot(epochs, val_losses, 'ro--', label="val_loss")
     plt.title("Training and Validation Loss")
     plt.ylabel("Loss")
+    plt.xlabel("Epochs")
+    plt.legend()
+
+    # Plot training and validation accuracies
+    plt.subplot(222)
+    plt.plot(epochs, train_accuracies, 'bo--', label="train_acc")
+    plt.plot(epochs, val_accuracies, 'ro--', label="val_acc")
+    plt.title("Training and Validation Accuracy")
+    plt.ylabel("Accuracy")
     plt.xlabel("Epochs")
     plt.legend()
 
@@ -101,8 +111,10 @@ X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, random_st
 
 # Create datasets and dataloaders
 transform = transforms.Compose([
-    # transforms.RandomRotation(10),            # Rotate by a random angle up to 10 degrees
+    # transforms.RandomRotation(5),            # Rotate by a random angle up to 10 degrees
     # transforms.RandomHorizontalFlip(),        # Randomly flip horizontally
+    # transforms.Resize((90, 90)),
+    # transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 ])
 
@@ -115,14 +127,19 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 # Initialize the model, loss function, and optimizer
 model = CNNModel()
 criterion = nn.BCELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 10
+num_epochs = 25
 train_losses = []  # To store training losses
 val_losses = []    # To store validation losses
+train_accuracies = []  # To store training accuracies
+val_accuracies = []    # To store validation accuracies
 for epoch in range(num_epochs):
     model.train()
+    correct_train = 0
+    total_train = 0
+
     for images, labels in train_loader:
         optimizer.zero_grad()
         outputs = model(images.float())
@@ -130,6 +147,13 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
+        # Calculate training accuracy
+        predicted = (outputs >= 0.5).float()
+        correct_train += (predicted == labels.view(-1, 1)).sum().item()
+        total_train += labels.size(0)
+
+    train_accuracy = correct_train / total_train
+    train_accuracies.append(train_accuracy)
     # Validation loop
     model.eval()
     with torch.no_grad():
@@ -146,8 +170,12 @@ for epoch in range(num_epochs):
 
     train_losses.append(loss.item())
     val_losses.append(val_loss.item())
-    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss.item():.4f}, Validation Loss: {val_loss.item():.4f}')
-# plot_accuracy_loss(train_losses, val_losses)
+
+    val_accuracy = (np.round(val_outputs) == val_labels.reshape(-1, 1)).mean()
+    val_accuracies.append(val_accuracy)
+
+    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss.item():.4f}, Training Acc: {train_accuracy:.4f}, Validation Loss: {val_loss.item():.4f}')
+plot_accuracy_loss(train_losses, val_losses, train_accuracies, val_accuracies)
 
 torch.save(model.state_dict(), 'football_model.pth')
 
