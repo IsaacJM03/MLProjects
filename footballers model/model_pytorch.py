@@ -111,15 +111,18 @@ X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, random_st
 
 # Create datasets and dataloaders
 transform = transforms.Compose([
-    # transforms.RandomRotation(5),            # Rotate by a random angle up to 10 degrees
-    # transforms.RandomHorizontalFlip(),        # Randomly flip horizontally
+    transforms.ToPILImage(),  # Convert tensor to PIL Image
+    transforms.RandomRotation(10),            # Rotate by a random angle up to 10 degrees
+    transforms.RandomHorizontalFlip(),        # Randomly flip horizontally
     # transforms.Resize((90, 90)),
     # transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 ])
 
-train_dataset = CustomDataset(list(zip(X_train, y_train)), transform=transform)
-val_dataset = CustomDataset(list(zip(X_val, y_val)), transform=transform)
+
+train_dataset = CustomDataset(list(zip(torch.from_numpy(X_train).unsqueeze(1), y_train)), transform=transform)
+val_dataset = CustomDataset(list(zip(torch.from_numpy(X_val).unsqueeze(1), y_val)), transform=transform)
+
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
@@ -127,10 +130,10 @@ val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 # Initialize the model, loss function, and optimizer
 model = CNNModel()
 criterion = nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.005)  # Add weight decay parameter
 
 # Training loop
-num_epochs = 25
+num_epochs = 40
 train_losses = []  # To store training losses
 val_losses = []    # To store validation losses
 train_accuracies = []  # To store training accuracies
@@ -175,7 +178,7 @@ for epoch in range(num_epochs):
     val_accuracies.append(val_accuracy)
 
     print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss.item():.4f}, Training Acc: {train_accuracy:.4f}, Validation Loss: {val_loss.item():.4f}')
-plot_accuracy_loss(train_losses, val_losses, train_accuracies, val_accuracies)
+# plot_accuracy_loss(train_losses, val_losses, train_accuracies, val_accuracies)
 
 torch.save(model.state_dict(), 'football_model.pth')
 

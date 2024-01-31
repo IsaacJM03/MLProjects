@@ -19,7 +19,7 @@ def test_model_for_player(player_name, group_name, country_name, player_images_f
 
     # Get the specific player's folder
     player_folder = os.path.join(player_images_folder, "Images", f"Group {group_name}", f"{country_name} Players", f"Images_{player_name}")
-    print(player_folder)
+
     if not os.path.exists(player_folder):
         print(f"Error: Folder for {player_name} not found.")
         return
@@ -38,7 +38,7 @@ def test_model_for_player(player_name, group_name, country_name, player_images_f
                 probability = torch.sigmoid(torch.Tensor([prediction])).item()
             
             # Interpret the model's output
-            predicted_player = player_name if prediction > 0.5 else "Not " + player_name
+            predicted_player = player_name if float(prediction) >= float(0.5) else "Not " + player_name
 
             print(f"Image: {filename}, Predicted Player: {predicted_player}, Probability: {probability * 100:.2f}%")
 

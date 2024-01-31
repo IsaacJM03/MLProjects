@@ -2,15 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footballer Recognition</title>
+    <title>Football Player Prediction</title>
 </head>
 <body>
-    <h1>Footballer Recognition</h1>
-    <form method="POST" action="/" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <input type="text" name="player" placeholder="Enter player name" required>
-        <button type="submit">Upload</button>
+    <h1>Football Player Prediction</h1>
+    <form method="post" action="/">
+        <label for="player_name">Player Name:</label>
+        <input type="text" name="player_name" required><br>
+
+        <label for="group_name">Group Name:</label>
+        <input type="text" name="group_name" required><br>
+
+        <label for="country_name">Country Name:</label>
+        <input type="text" name="country_name" required><br>
+
+        <label for="test_folder_path">Test Folder Path:</label>
+        <input type="text" name="test_folder_path" required><br>
+
+        <input type="submit" value="Predict">
     </form>
 </body>
 </html>

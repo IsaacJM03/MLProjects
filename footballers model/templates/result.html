@@ -2,12 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result</title>
+    <title>Football Player Prediction - Results</title>
 </head>
 <body>
-    <h2>Result</h2>
-    <p>Footballer: {{ result }}</p>
-    <a href="/">Go back</a>
+    <h1>Results</h1>
+    <table border="1">
+        <tr>
+            <th>Image</th>
+            <th>Predicted Player</th>
+            <th>Probability</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.filename }}</td>
+            <td>{{ result.predicted_player }}</td>
+            <td>{{ result.probability }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
