@@ -54,15 +54,22 @@
 
 
 import requests
+import os
+from dotenv import load_dotenv
 
+# Load environment variables from .env
+load_dotenv()
+
+# Access the environment variable
+token = os.getenv("HUGGINGFACE_API_KEY")
 API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": "Bearer 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"}
+headers = {"Authorization": f"Bearer {token} "}
 
 def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.content
 image_bytes = query({
-	"inputs": "Dwight from 'The Office' and Neo from 'The Matrix'",
+	"inputs": "Man dancing in Africa",
 })
 # You can access the image with PIL.Image for example
 import io
