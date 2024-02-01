@@ -40,12 +40,12 @@ def test_model_for_player(player_name, group_name, country_name, player_images_f
             # Interpret the model's output
             predicted_player = player_name if float(prediction) >= float(0.5) else "Not " + player_name
 
-            print(f"Image: {filename}, Predicted Player: {predicted_player}, Probability: {probability * 100:.2f}%")
+            print(f"Image: {filename}, Predicted Player: {predicted_player}, Possibility: {probability * 100:.2f}%")
 
 # Specify the player, group, country, and paths for player and test folders
-player_to_test = "Cristiano Ronaldo (captain)"
-group_to_test = "H"
-country_to_test = "Portugal"
+player_to_test = "Raheem Sterling"
+group_to_test = "B"
+country_to_test = "England"
 player_folder_path = "/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/Images"
 test_folder_path = "/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/test"
 # test_folder_path = "/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/Images/Images/Group H/Portugal Players/Images_Cristiano Ronaldo (captain)"

@@ -8,19 +8,55 @@
 </head>
 <body>
     <h1>Football Player Prediction</h1>
-    <form method="post" action="/">
+    <form method="post" action="/" enctype="multipart/form-data" onsubmit="return validateForm()">
         <label for="player_name">Player Name:</label>
         <input type="text" name="player_name" required><br>
 
         <label for="group_name">Group Name:</label>
-        <input type="text" name="group_name" required><br>
+        <select name="group_name" required>
+            <option value="A">Group A</option>
+            <option value="B">Group B</option>
+            <option value="C">Group C</option></option>
+            <option value="D">Group D</option>
+            <option value="E">Group E</option>
+            <option value="F">Group F</option>
+            <option value="G">Group G</option>
+            <option value="H">Group H</option>
+        </select><br>
 
         <label for="country_name">Country Name:</label>
-        <input type="text" name="country_name" required><br>
+        <select name="country_name" required>
+            <option value="Argentina">Argentina</option>
+            <option value="Brazil">Brazil</option>
+            <option value="England">England</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Italy">Italy</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="Portugal">Portugal</option>
+            <option value="Spain">Spain</option>
+            <option value="Uruguay">Uruguay</option>
+        </select><br>
 
         <label for="test_folder_path">Test Folder Path:</label>
-        <input type="text" name="test_folder_path" required><br>
+        <input type="file" name="test_folder" id="test_folder" accept=".">
 
+        <script>
+            function validateForm() {
+                var testFolderInput = document.getElementById('test_folder');
+                var testFolderPathInput = document.getElementsByName('test_folder_path')[0];
+
+                // Extract the path from the file input
+                var filePath = testFolderInput.value;
+                // Display the path in the corresponding text input
+                testFolderPathInput.value = filePath;
+
+                // Ensure the form is submitted only if the path is selected
+                return filePath.trim() !== '';
+            }
+        </script>
+
+        <br>
         <input type="submit" value="Predict">
     </form>
 </body>

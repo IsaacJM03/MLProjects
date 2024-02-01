@@ -19,7 +19,40 @@ model = CNNModel()
 model.load_state_dict(torch.load('football_model.pth'))
 model.eval()
 
-def predict_player(player_name, test_images_folder):
+# def predict_player(player_name, test_images_folder):
+#     results = []
+
+#     # Get the specific player's folder
+#     player_folder = os.path.join(player_folder_path, "Images", f"Group {group_name}", f"{country_name} Players", f"Images_{player_name}")
+
+#     if not os.path.exists(player_folder):
+#         return [{"filename": "Error", "predicted_player": f"Folder for {player_name} not found.", "probability": 0.0}]
+
+#     # Loop through test images
+#     for filename in os.listdir(test_images_folder):
+#         if filename.endswith((".jpg", ".png", ".jpeg", ".webp")):
+#             # Read and preprocess the image
+#             img_path = os.path.join(test_images_folder, filename)
+#             img = Image.open(img_path)
+#             img_tensor = transform(img).unsqueeze(0)  # Add a batch dimension
+
+#             # Make the prediction
+#             with torch.no_grad():
+#                 prediction = model(img_tensor).item()
+#                 probability = torch.sigmoid(torch.Tensor([prediction])).item()
+
+#             # Interpret the model's output
+#             predicted_player = player_name if float(prediction) >= float(0.5) else "Not " + player_name
+
+#             results.append({
+#                 "filename": filename,
+#                 "predicted_player": predicted_player,
+#                 "probability": probability * 100
+#             })
+
+#     return results
+
+def predict_player(player_name, group_name, country_name, player_folder_path, test_images_folder):
     results = []
 
     # Get the specific player's folder

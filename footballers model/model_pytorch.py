@@ -115,7 +115,7 @@ transform = transforms.Compose([
     transforms.RandomRotation(10),            # Rotate by a random angle up to 10 degrees
     transforms.RandomHorizontalFlip(),        # Randomly flip horizontally
     # transforms.Resize((90, 90)),
-    # transforms.Grayscale(num_output_channels=3),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor(),
 ])
 

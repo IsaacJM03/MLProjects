@@ -62,17 +62,49 @@ load_dotenv()
 
 # Access the environment variable
 token = os.getenv("HUGGINGFACE_API_KEY")
-API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": f"Bearer {token} "}
+# API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+# headers = {"Authorization": f"Bearer {token} "}
+
+# def query(payload):
+# 	response = requests.post(API_URL, headers=headers, json=payload)
+# 	return response.content
+# image_bytes = query({
+# 	"inputs": "Elevation worship",
+# })
+# # You can access the image with PIL.Image for example
+# import io
+# from PIL import Image
+# image = Image.open(io.BytesIO(image_bytes))
+# Image._show(image)
+
+
+# API_URL = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
+
+# def query(payload):
+# 	response = requests.post(API_URL, headers=headers, json=payload)
+# 	return response.json()
+	
+# output = query({
+# 	"inputs": {
+# 		"past_user_inputs": ["Which movie is the best ?"],
+# 		"generated_responses": ["It is The Matrix for sure."],
+# 		"text": "Can you explain the matrix ?",
+# 		"padding_side": "left"
+# 	},
+# })
+
+# print(output)
+
+import requests
+
+API_URL = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-hf"
+headers = {"Authorization": f"Bearer {token}"}
 
 def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.content
-image_bytes = query({
-	"inputs": "Man dancing in Africa",
+	return response.json()
+	
+output = query({
+	"inputs": "def test_model_for_player(player_name, group_name, country_name, player_images_folder, test_images_folder):",
 })
-# You can access the image with PIL.Image for example
-import io
-from PIL import Image
-image = Image.open(io.BytesIO(image_bytes))
-Image._show(image)
+print(output)
