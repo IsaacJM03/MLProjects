@@ -97,14 +97,78 @@ token = os.getenv("HUGGINGFACE_API_KEY")
 
 import requests
 
-API_URL = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-hf"
-headers = {"Authorization": f"Bearer {token}"}
+# API_URL = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-hf"
 
-def query(payload):
-	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.json()
+# def query(payload):
+# 	response = requests.post(API_URL, headers=headers, json=payload)
+# 	return response.json()
 	
-output = query({
-	"inputs": "def test_model_for_player(player_name, group_name, country_name, player_images_folder, test_images_folder):",
-})
-print(output)
+# output = query({
+# 	"inputs": "def test_model_for_player(player_name, group_name, country_name, player_images_folder, test_images_folder):",
+# })
+# print(output)
+
+# import requests
+
+# API_URL = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
+# headers = {"Authorization": f"Bearer {token}"}
+
+# def query(payload):
+# 	response = requests.post(API_URL, headers=headers, json=payload)
+# 	return response.json()
+	
+# output = query({
+# 	"inputs": "when it rains, ",
+# 	"options": {
+# 		"length_penalty": 2.5,
+# 		"padding_side" : "left"
+# 	}
+# })
+# # output.padding_side = "left"
+
+# print(output)
+
+
+# Use a pipeline as a high-level helper
+# from transformers import pipeline
+
+# pipe = pipeline("conversational", model="microsoft/DialoGPT-medium")
+
+# print(pipe)
+
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+from transformers.utils import logging
+logging.get_logger("transformers").setLevel(logging.ERROR)
+
+
+tokenizer = AutoTokenizer.from_pretrained("./huggingface/dialogpt-tokenizer/")
+model = AutoModelForCausalLM.from_pretrained("./huggingface/dialogpt-model/")
+
+# tokenizer.save_pretrained("./huggingface/tokenizers/")
+# model.save_pretrained("./huggingface/models/")
+
+message = input("how many messages do you wanna send?: ")
+# Let's chat for some lines
+for step in range(int(message)):
+    # encode the new user input, add the eos_token and return a tensor in Pytorch
+    new_user_input_ids = tokenizer.encode(input(">> User:") + tokenizer.eos_token, return_tensors='pt')
+
+    # append the new user input tokens to the chat history
+    bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1) if step > 0 else new_user_input_ids
+
+    # generated a response while limiting the total chat history to 1000 tokens, 
+    chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+
+    # pretty print last ouput tokens from bot
+    print("DialoGPT: {}".format(tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)))
+
+
+# from transformers import pipeline
+
+# image_to_text = pipeline("image-to-text", model="nlpconnect/vit-gpt2-image-captioning")
+
+# result = image_to_text("/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/test/charge-messi-4k-ultra-hd-j29dpoy6dmug491j.webp")
+# print(result)
+
+# # [{'generated_text': 'a soccer game with a player jumping to catch the ball '}]

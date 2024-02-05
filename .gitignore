@@ -8,3 +8,7 @@ Images/
 *.jpeg
 *.webp
 .env
+vit_finetuned/
+*.safetensors
+.arrow
+train/
