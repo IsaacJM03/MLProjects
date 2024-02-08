@@ -12,3 +12,5 @@ vit_finetuned/
 *.safetensors
 .arrow
 train/
+val/
+resnet*

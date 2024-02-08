@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Image Classification Web Interface</title>
+    <!-- Add the following scripts for TensorFlow.js and Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Enhanced Image Classification Web Interface</h1>
+    <p>Upload an image, and let's predict its contents!</p>
+    <!-- Add a canvas for displaying the uploaded image -->
+    <canvas id="uploadedImageCanvas" width="224" height="224" style="border: 1px solid #000;"></canvas>
+    <br>
+    <input type="file" id="imageInput" accept="image/*" required>
+    <button onclick="predict()">Predict</button>
+    <br>
+    <h2>Predictions:</h2>
+    <ul id="predictionsList"></ul>
+    
+    <!-- Add this script block to your HTML file -->
+    <script>
+        async function predict() {
+            const imageInput = document.getElementById('imageInput');
+            const predictionsList = document.getElementById('predictionsList');
+            const uploadedImageCanvas = document.getElementById('uploadedImageCanvas');
+            const ctx = uploadedImageCanvas.getContext('2d');
+            
+            if (!imageInput.files || imageInput.files.length === 0) {
+                alert('Please select an image.');
+                return;
+            }
+
+            const file = imageInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // Display the uploaded image on the canvas
+                const imageUrl = URL.createObjectURL(file);
+                const image = new Image();
+                image.src = imageUrl;
+
+                image.onload = () => {
+                    ctx.clearRect(0, 0, uploadedImageCanvas.width, uploadedImageCanvas.height);
+                    ctx.drawImage(image, 0, 0, uploadedImageCanvas.width, uploadedImageCanvas.height);
+                };
+
+                const response = await axios.post('/predict', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                const predictions = response.data.predictions;
+                predictionsList.innerHTML = '';
+
+                // Handle the case when predictions is an object
+                if (predictions && predictions.label && predictions.score) {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `${predictions.label} - Score: ${predictions.score.toFixed(2)*100}%`;
+                    predictionsList.appendChild(listItem);
+                } else if (Array.isArray(predictions)) {
+                    // Handle the case when predictions is an array
+                    predictions.forEach((prediction, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.innerText = `${prediction.label} - Score: ${prediction.score.toFixed(2)*100}%`;
+                        predictionsList.appendChild(listItem);
+                    });
+                } else {
+                    alert('Invalid format for predictions.');
+                }
+            } catch (error) {
+                console.error('Error predicting:', error);
+                alert('Error predicting. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
