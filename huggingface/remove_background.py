@@ -43,8 +43,8 @@ def remove_background_and_convert_to_grayscale(input_dir, output_dir):
                 print(f"Error processing {filename} for player {player_name}: {e}")
 
 if __name__ == "__main__":
-    input_dir = "/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/Images/Images/Players/ALL-PLAYERS"  # Replace with your actual input directory
-    output_dir = "/home/isaac-flt/Projects/ML4D/MLProjects/footballers model/Images/Images/Players/processed"  # Replace with your desired output directory
+    input_dir = ""  # Replace with your actual input directory
+    output_dir = ""  # Replace with your desired output directory
 
     try:
         os.makedirs(output_dir, exist_ok=True)  # Create output directory if it doesn't exist
