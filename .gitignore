@@ -14,3 +14,4 @@ vit_finetuned/
 train/
 val/
 resnet*
+*.out

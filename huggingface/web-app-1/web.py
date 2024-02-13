@@ -5,7 +5,7 @@ from transformers import pipeline
 app = Flask(__name__)
 
 # Create an image classification pipeline
-model = pipeline("image-classification", model="IsaacMwesigwa/footballer-recognition")
+model = pipeline("image-classification", model="IsaacMwesigwa/footballer-recognition-3")
 
 # Define a route to render the main page
 @app.route('/')
