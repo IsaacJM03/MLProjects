@@ -15,3 +15,5 @@ train/
 val/
 resnet*
 *.out
+events*
+settings.json
